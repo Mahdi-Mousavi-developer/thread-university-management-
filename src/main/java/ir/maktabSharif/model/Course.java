@@ -28,4 +28,15 @@ public class Course extends BaseModel {
 
     @OneToMany(mappedBy = "course")
     private List<Exam> exams = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "title='" + title + '\'' +
+                ", unit='" + unit + '\'' +
+                ", students=" + students +
+                ", exams=" + exams +
+                '}';
+    }
 }
+
