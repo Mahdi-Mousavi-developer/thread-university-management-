@@ -66,7 +66,7 @@ public class ExamRepositoryImpl implements ExamRepository {
         if (this.findById(id).isPresent()) {
             try {
                 transaction.begin();
-                entityManager.remove(optionalExam);
+                entityManager.merge(optionalExam);
                 transaction.commit();
             } catch (Exception e) {
                 transaction.rollback();

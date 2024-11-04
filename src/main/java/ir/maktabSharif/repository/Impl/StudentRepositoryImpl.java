@@ -64,7 +64,7 @@ public class StudentRepositoryImpl implements StudentRepository {
         if (this.findById(id).isPresent()) {
             try {
                 transaction.begin();
-                entityManager.remove(optionalStudent);
+                entityManager.merge(optionalStudent);
                 transaction.commit();
             } catch (Exception e) {
                 transaction.rollback();

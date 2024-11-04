@@ -33,7 +33,7 @@ public class TeacherRepositoryImpl implements TeacherRepository {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            entityManager.refresh(object);
+            entityManager.merge(object);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();

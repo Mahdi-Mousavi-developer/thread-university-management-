@@ -31,7 +31,7 @@ public class CourseRepositoryImpl implements CourseRepository  {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            entityManager.persist(course);
+            entityManager.merge(course);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
