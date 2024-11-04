@@ -74,7 +74,7 @@ public class ExamRepositoryImpl implements ExamRepository {
                 entityManager.close();
             }
         } else {
-            System.out.println("Course not found");
+            System.out.println("exam not found");
         }
 
     }
