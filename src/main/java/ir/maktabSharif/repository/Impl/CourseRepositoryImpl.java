@@ -9,7 +9,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import java.util.*;
 
-public class CourseRepositoryImpl implements CourseRepository {
+public class CourseRepositoryImpl implements CourseRepository  {
     private EntityManagerProvider entityManagerProvider;
 
     public CourseRepositoryImpl(EntityManagerProvider entityManagerProvider) {
@@ -24,58 +24,6 @@ public class CourseRepositoryImpl implements CourseRepository {
         } else {
             updateCourse(object);
         }
-
-
-    }
-
-    @Override
-    public void delete(Integer id) {
-        EntityManager entityManager = entityManagerProvider.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        Optional<Course> optionalCourse = findById(id);
-        if (this.findById(id).isPresent()) {
-            try {
-                transaction.begin();
-                entityManager.remove(optionalCourse);
-                transaction.commit();
-            } catch (Exception e) {
-                transaction.rollback();
-            } finally {
-                entityManager.close();
-            }
-        }else{
-            System.out.println("Course not found");
-        }
-        }
-
-
-
-    @Override
-    public Optional<Course> findById(Integer id) {
-        EntityManager entityManager = entityManagerProvider.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        Optional<Course> optionalCourse = Optional.empty();
-        try {
-            transaction.begin();
-            Course course = entityManager.find(Course.class, id);
-            transaction.commit();
-            optionalCourse = Optional.of(course);
-
-        }catch (Exception e){
-            transaction.rollback();
-        }finally {
-            entityManager.close();
-        }return optionalCourse;
-    }
-
-    @Override
-    public List<Course> getAll() {
-        EntityManager entityManager = entityManagerProvider.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        Query query =  entityManager.createQuery("select c from Course c");
-        return query.getResultList();
-
-
     }
 
     public void saveCourse(Course course) {
@@ -104,6 +52,56 @@ public class CourseRepositoryImpl implements CourseRepository {
         } finally {
             entityManager.close();
         }
+    }
+
+
+    @Override
+    public void delete(Integer id) {
+        EntityManager entityManager = entityManagerProvider.getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        Optional<Course> optionalCourse = findById(id);
+        if (this.findById(id).isPresent()) {
+            try {
+                transaction.begin();
+                entityManager.remove(optionalCourse);
+                transaction.commit();
+            } catch (Exception e) {
+                transaction.rollback();
+            } finally {
+                entityManager.close();
+            }
+        } else {
+            System.out.println("Course not found");
+        }
+    }
+
+
+    @Override
+    public Optional<Course> findById(Integer id) {
+        EntityManager entityManager = entityManagerProvider.getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        Optional<Course> optionalCourse = Optional.empty();
+        try {
+            transaction.begin();
+            Course course = entityManager.find(Course.class, id);
+            transaction.commit();
+            optionalCourse = Optional.of(course);
+
+        } catch (Exception e) {
+            transaction.rollback();
+        } finally {
+            entityManager.close();
+        }
+        return optionalCourse;
+    }
+
+    @Override
+    public List<Course> getAll() {
+        EntityManager entityManager = entityManagerProvider.getEntityManager();
+        Query query = entityManager.createQuery("select c from Course c");
+        return query.getResultList();
+
+
     }
 }
 
