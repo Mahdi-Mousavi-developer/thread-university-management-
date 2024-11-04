@@ -26,8 +26,8 @@ public class Main {
         //   em.getTransaction().commit();*/
         //   // payan add kardan student be database
         EntityManagerProvider entityManagerProvider = new EntityManagerProvider();
-CourseRepositoryImpl courseRepository = new CourseRepositoryImpl(entityManagerProvider);
-List<Course> cours =courseRepository.getAll();
+        CourseRepositoryImpl courseRepository = new CourseRepositoryImpl(entityManagerProvider);
+        List<Course> cours = courseRepository.getAll();
         System.out.println(cours);
     }
 }

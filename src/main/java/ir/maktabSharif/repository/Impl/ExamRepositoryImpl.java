@@ -101,8 +101,15 @@ public class ExamRepositoryImpl implements ExamRepository {
     @Override
     public List<Exam> getAll() {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-        Query query = entityManager.createQuery("select c from Exam c");
+        EntityTransaction transaction = entityManager.getTransaction();
+        Query query = null;
+        try{
+            transaction.begin();
+            query= entityManager.createQuery("select c from Exam c");
+            transaction.commit();
+        }catch(Exception e){
+            System.out.println("exams not found");
+        }
         return query.getResultList();
-
     }
 }

@@ -98,7 +98,16 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<User> getAll() {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-        Query query = entityManager.createQuery("select c from User c");
+        EntityTransaction transaction = entityManager.getTransaction();
+        Query query = null;
+        try{
+            transaction.begin();
+            query= entityManager.createQuery("select c from User c");
+            transaction.commit();
+        }catch(Exception e){
+            System.out.println("users not found");
+        }
         return query.getResultList();
     }
+
 }

@@ -98,7 +98,16 @@ public class StudentRepositoryImpl implements StudentRepository {
     @Override
     public List<Student> getAll() {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-        Query query = entityManager.createQuery("select c from Course c");
+        EntityTransaction transaction = entityManager.getTransaction();
+        Query query = null;
+        try{
+            transaction.begin();
+            query= entityManager.createQuery("select c from Student c");
+            transaction.commit();
+        }catch(Exception e){
+            System.out.println("students not found");
+        }
         return query.getResultList();
     }
+
 }

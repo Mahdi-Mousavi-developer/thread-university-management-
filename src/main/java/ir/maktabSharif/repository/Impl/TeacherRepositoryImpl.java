@@ -98,7 +98,18 @@ public class TeacherRepositoryImpl implements TeacherRepository {
     @Override
     public List<Teacher> getAll() {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-        Query query = entityManager.createQuery("select c from Teacher c");
+        EntityTransaction transaction = entityManager.getTransaction();
+        Query query = null;
+        try{
+            transaction.begin();
+            query= entityManager.createQuery("select c from Teacher c");
+            transaction.commit();
+        }catch(Exception e){
+            System.out.println("Teachers not found");
+        }finally{
+            entityManager.close();
+        }
         return query.getResultList();
     }
+
 }

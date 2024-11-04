@@ -98,10 +98,18 @@ public class CourseRepositoryImpl implements CourseRepository  {
     @Override
     public List<Course> getAll() {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-        Query query = entityManager.createQuery("select c from Course c");
+        EntityTransaction transaction = entityManager.getTransaction();
+        Query query = null;
+        try{
+            transaction.begin();
+            query= entityManager.createQuery("select c from Course c");
+            transaction.commit();
+        }catch(Exception e){
+            System.out.println("Course not found");
+        }
+
+
         return query.getResultList();
-
-
     }
 }
 
