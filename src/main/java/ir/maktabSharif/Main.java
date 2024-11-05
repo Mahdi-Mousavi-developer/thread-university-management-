@@ -4,6 +4,8 @@ import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import ir.maktabSharif.model.Course;
 import ir.maktabSharif.model.Student;
 import ir.maktabSharif.repository.Impl.CourseRepositoryImpl;
+import ir.maktabSharif.repository.Impl.StudentRepositoryImpl;
+import ir.maktabSharif.thread.CountOfAllStudent;
 import ir.maktabSharif.util.EntityManagerProvider;
 
 import javax.persistence.EntityManager;
@@ -25,9 +27,24 @@ public class Main {
         //   em.persist(student);
         //   em.getTransaction().commit();*/
         //   // payan add kardan student be database
+
+
+
+
+        //test getAll()
         EntityManagerProvider entityManagerProvider = new EntityManagerProvider();
         CourseRepositoryImpl courseRepository = new CourseRepositoryImpl(entityManagerProvider);
         List<Course> cours = courseRepository.getAll();
         System.out.println(cours);
+
+
+
+        //thread
+        StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(entityManagerProvider);
+
+        Thread thread = new Thread(new CountOfAllStudent(studentRepository));
+        thread.start();
+        thread.setPriority(1);
+
     }
 }
