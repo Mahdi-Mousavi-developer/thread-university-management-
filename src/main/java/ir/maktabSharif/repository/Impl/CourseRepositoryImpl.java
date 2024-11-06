@@ -1,5 +1,6 @@
 package ir.maktabSharif.repository.Impl;
 
+import ir.maktabSharif.Exception.CourseNotFoundException;
 import ir.maktabSharif.model.Course;
 import ir.maktabSharif.repository.CourseRepository;
 import ir.maktabSharif.util.EntityManagerProvider;
@@ -9,7 +10,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import java.util.*;
 
-public class CourseRepositoryImpl implements CourseRepository  {
+public class CourseRepositoryImpl implements CourseRepository {
     private EntityManagerProvider entityManagerProvider;
 
     public CourseRepositoryImpl(EntityManagerProvider entityManagerProvider) {
@@ -31,7 +32,7 @@ public class CourseRepositoryImpl implements CourseRepository  {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            entityManager.merge(course);
+            entityManager.persist(course);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
@@ -45,7 +46,7 @@ public class CourseRepositoryImpl implements CourseRepository  {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            entityManager.refresh(course);
+            entityManager.merge(course);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
@@ -56,7 +57,7 @@ public class CourseRepositoryImpl implements CourseRepository  {
 
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Integer id) throws Exception {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         Optional<Course> optionalCourse = findById(id);
@@ -71,7 +72,7 @@ public class CourseRepositoryImpl implements CourseRepository  {
                 entityManager.close();
             }
         } else {
-            System.out.println("Course not found");
+            throw new CourseNotFoundException("Course not found");
         }
     }
 
@@ -79,36 +80,23 @@ public class CourseRepositoryImpl implements CourseRepository  {
     @Override
     public Optional<Course> findById(Integer id) {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
         Optional<Course> optionalCourse = Optional.empty();
-        try {
-            transaction.begin();
-            Course course = entityManager.find(Course.class, id);
-            transaction.commit();
-            optionalCourse = Optional.of(course);
+        Course course = entityManager.find(Course.class, id);
+        optionalCourse = Optional.of(course);
 
-        } catch (Exception e) {
-            transaction.rollback();
-        } finally {
-            entityManager.close();
-        }
+
         return optionalCourse;
     }
 
     @Override
-    public List<Course> getAll() {
+    public List<Course> getAll() throws CourseNotFoundException {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
         Query query = null;
-        try{
-            transaction.begin();
-            query= entityManager.createQuery("select c from Course c");
-            transaction.commit();
-        }catch(Exception e){
-            System.out.println("Course not found");
+        try {
+            query = entityManager.createQuery("select c from Course c");
+        } catch (Exception e) {
+            throw new CourseNotFoundException("course not found");
         }
-
-
         return query.getResultList();
     }
 }

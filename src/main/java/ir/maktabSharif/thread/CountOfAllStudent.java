@@ -15,12 +15,18 @@ public class CountOfAllStudent implements Runnable {
 
     @Override
     public void run() {
-        List<Student> students = studentRepository.getAll();
-        int number = students.size();
+        List<Student> students = null;
+
         while (true) {
+            try {
+                students = studentRepository.getAll();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            int number = students.size();
             System.out.println(number);
             try {
-                Thread.sleep(3422, 1);
+                Thread.sleep(2000, 1);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

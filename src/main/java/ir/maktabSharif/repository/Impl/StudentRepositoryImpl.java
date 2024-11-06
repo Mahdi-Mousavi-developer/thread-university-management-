@@ -1,6 +1,6 @@
 package ir.maktabSharif.repository.Impl;
 
-import ir.maktabSharif.model.Course;
+import ir.maktabSharif.Exception.StudentNotFoundException;
 import ir.maktabSharif.model.Student;
 import ir.maktabSharif.repository.StudentRepository;
 import ir.maktabSharif.util.EntityManagerProvider;
@@ -8,7 +8,6 @@ import ir.maktabSharif.util.EntityManagerProvider;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +32,7 @@ public class StudentRepositoryImpl implements StudentRepository {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            entityManager.refresh(object);
+            entityManager.merge(object);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
@@ -57,14 +56,14 @@ public class StudentRepositoryImpl implements StudentRepository {
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Integer id) throws StudentNotFoundException {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         Optional<Student> optionalStudent = findById(id);
         if (this.findById(id).isPresent()) {
             try {
                 transaction.begin();
-                entityManager.merge(optionalStudent);
+                entityManager.remove(optionalStudent);
                 transaction.commit();
             } catch (Exception e) {
                 transaction.rollback();
@@ -72,40 +71,28 @@ public class StudentRepositoryImpl implements StudentRepository {
                 entityManager.close();
             }
         } else {
-            System.out.println("student not found");
+           throw new StudentNotFoundException("student not found");
         }
     }
 
     @Override
     public Optional<Student> findById(Integer id) {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
         Optional<Student> optionalStudent = Optional.empty();
-        try {
-            transaction.begin();
             Student student = entityManager.find(Student.class, id);
-            transaction.commit();
-            optionalStudent = Optional.of(student);
+        return optionalStudent = Optional.of(student);
 
-        } catch (Exception e) {
-            transaction.rollback();
-        } finally {
-            entityManager.close();
-        }
-        return optionalStudent;
     }
 
     @Override
-    public List<Student> getAll() {
+    public List<Student> getAll() throws StudentNotFoundException {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
         Query query = null;
         try{
-            transaction.begin();
             query= entityManager.createQuery("select c from Student c");
-            transaction.commit();
+
         }catch(Exception e){
-            System.out.println("students not found");
+            throw new StudentNotFoundException("students not found");
         }
         return query.getResultList();
     }

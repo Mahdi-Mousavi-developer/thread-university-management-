@@ -1,6 +1,7 @@
 package ir.maktabSharif.repository.Impl;
 
 
+import ir.maktabSharif.Exception.ExamNotFoundException;
 import ir.maktabSharif.model.Exam;
 import ir.maktabSharif.repository.ExamRepository;
 import ir.maktabSharif.util.EntityManagerProvider;
@@ -34,7 +35,7 @@ public class ExamRepositoryImpl implements ExamRepository {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            entityManager.persist(object);
+            entityManager.merge(object);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
@@ -59,14 +60,14 @@ public class ExamRepositoryImpl implements ExamRepository {
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Integer id) throws ExamNotFoundException {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         Optional<Exam> optionalExam = findById(id);
         if (this.findById(id).isPresent()) {
             try {
                 transaction.begin();
-                entityManager.merge(optionalExam);
+                entityManager.remove(optionalExam);
                 transaction.commit();
             } catch (Exception e) {
                 transaction.rollback();
@@ -74,7 +75,7 @@ public class ExamRepositoryImpl implements ExamRepository {
                 entityManager.close();
             }
         } else {
-            System.out.println("exam not found");
+            throw new ExamNotFoundException("exam not found");
         }
 
     }
@@ -82,33 +83,24 @@ public class ExamRepositoryImpl implements ExamRepository {
     @Override
     public Optional<Exam> findById(Integer id) {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
         Optional<Exam> optionalExam = Optional.empty();
-        try {
-            transaction.begin();
-            Exam exam = entityManager.find(Exam.class, id);
-            transaction.commit();
-            optionalExam = Optional.of(exam);
+        Exam exam = entityManager.find(Exam.class, id);
+        optionalExam = Optional.of(exam);
 
-        } catch (Exception e) {
-            transaction.rollback();
-        } finally {
-            entityManager.close();
-        }
+
         return optionalExam;
     }
 
     @Override
-    public List<Exam> getAll() {
+    public List<Exam> getAll() throws ExamNotFoundException {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
         Query query = null;
-        try{
-            transaction.begin();
-            query= entityManager.createQuery("select c from Exam c");
-            transaction.commit();
-        }catch(Exception e){
-            System.out.println("exams not found");
+        try {
+
+            query = entityManager.createQuery("select c from Exam c");
+
+        } catch (Exception e) {
+            throw new ExamNotFoundException("exams not found");
         }
         return query.getResultList();
     }

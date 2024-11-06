@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface BaseRepository<T> {
     void saveOrUpdate(T object);
-    void delete(Integer id);
+    void delete(Integer id) throws Exception;
     Optional<T> findById(Integer id);
-    List<T> getAll();
+    List<T> getAll() throws Exception;
 }

@@ -1,6 +1,6 @@
 package ir.maktabSharif.repository.Impl;
 
-import ir.maktabSharif.model.Course;
+import ir.maktabSharif.Exception.UserNotFoundException;
 import ir.maktabSharif.model.User;
 import ir.maktabSharif.repository.UserRepository;
 import ir.maktabSharif.util.EntityManagerProvider;
@@ -8,7 +8,6 @@ import ir.maktabSharif.util.EntityManagerProvider;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,7 +56,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Integer id) throws UserNotFoundException {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         Optional<User> optionalUser = findById(id);
@@ -72,40 +71,32 @@ public class UserRepositoryImpl implements UserRepository {
                 entityManager.close();
             }
         } else {
-            System.out.println("User not found");
+            throw new UserNotFoundException("User not found");
         }
     }
 
     @Override
     public Optional<User> findById(Integer id) {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        Optional<User> optionalUser = Optional.empty();
-        try {
-            transaction.begin();
-           User user = entityManager.find(User.class, id);
-            transaction.commit();
-            optionalUser = Optional.of(user);
 
-        } catch (Exception e) {
-            transaction.rollback();
-        } finally {
-            entityManager.close();
-        }
-        return optionalUser;
+        Optional<User> optionalUser = Optional.empty();
+        User user = entityManager.find(User.class, id);
+        return optionalUser = Optional.of(user);
+
+
     }
 
     @Override
-    public List<User> getAll() {
+    public List<User> getAll() throws UserNotFoundException {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
+
         Query query = null;
-        try{
-            transaction.begin();
-            query= entityManager.createQuery("select c from User c");
-            transaction.commit();
-        }catch(Exception e){
-            System.out.println("users not found");
+        try {
+
+            query = entityManager.createQuery("select c from User c");
+
+        } catch (Exception e) {
+            throw new UserNotFoundException("users not found");
         }
         return query.getResultList();
     }

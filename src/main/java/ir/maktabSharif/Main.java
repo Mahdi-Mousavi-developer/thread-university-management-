@@ -1,8 +1,6 @@
 package ir.maktabSharif;
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import ir.maktabSharif.model.Course;
-import ir.maktabSharif.model.Student;
 import ir.maktabSharif.repository.Impl.CourseRepositoryImpl;
 import ir.maktabSharif.repository.Impl.StudentRepositoryImpl;
 import ir.maktabSharif.thread.CountOfAllStudent;
@@ -12,7 +10,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.List;
-import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
@@ -34,7 +31,12 @@ public class Main {
         //test getAll()
         EntityManagerProvider entityManagerProvider = new EntityManagerProvider();
         CourseRepositoryImpl courseRepository = new CourseRepositoryImpl(entityManagerProvider);
-        List<Course> cours = courseRepository.getAll();
+        List<Course> cours = null;
+        try {
+            cours = courseRepository.getAll();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         System.out.println(cours);
 
 
