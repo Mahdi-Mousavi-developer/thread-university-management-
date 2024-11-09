@@ -61,18 +61,17 @@ public class CourseRepositoryImpl implements CourseRepository {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         Optional<Course> optionalCourse = findById(id);
-        if (this.findById(id).isPresent()) {
-            try {
-                transaction.begin();
-                entityManager.remove(optionalCourse);
-                transaction.commit();
-            } catch (Exception e) {
-                transaction.rollback();
-            } finally {
-                entityManager.close();
-            }
-        } else {
+        if (!this.findById(id).isPresent()) {
             throw new CourseNotFoundException("Course not found");
+        }
+        try {
+            transaction.begin();
+            entityManager.remove(optionalCourse);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+        } finally {
+            entityManager.close();
         }
     }
 

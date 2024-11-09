@@ -12,7 +12,7 @@ import java.util.Date;
 @Setter
 @MappedSuperclass
 public abstract class BaseModel implements Serializable {
-    @javax.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
     @Temporal(TemporalType.TIMESTAMP)
