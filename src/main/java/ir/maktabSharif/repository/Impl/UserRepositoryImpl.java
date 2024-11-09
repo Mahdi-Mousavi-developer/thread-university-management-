@@ -1,6 +1,7 @@
 package ir.maktabSharif.repository.Impl;
 
 import ir.maktabSharif.Exception.GenerallyNotFoundException;
+import ir.maktabSharif.model.Student;
 import ir.maktabSharif.model.User;
 import ir.maktabSharif.repository.UserRepository;
 import ir.maktabSharif.util.EntityManagerProvider;
@@ -83,10 +84,8 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> findById(Long id) {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-
-        Optional<User> optionalUser = Optional.empty();
-        User user = entityManager.find(User.class, id);
-        return optionalUser = Optional.of(user);
+        Optional<User> optionalUser= Optional.ofNullable(entityManager.find(User.class, id));
+        return optionalUser;
 
 
     }

@@ -77,10 +77,8 @@ public class TeacherRepositoryImpl implements TeacherRepository {
     @Override
     public Optional<Teacher> findById(Long id) {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-
-        Optional<Teacher> optionalTeacher = Optional.empty();
-        Teacher teacher = entityManager.find(Teacher.class, id);
-        return optionalTeacher = Optional.of(teacher);
+        Optional<Teacher> optionalTeacher = Optional.ofNullable(entityManager.find(Teacher.class, id));
+        return optionalTeacher;
 
 
     }

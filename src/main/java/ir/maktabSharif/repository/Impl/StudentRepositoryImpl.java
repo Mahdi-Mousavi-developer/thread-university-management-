@@ -23,24 +23,47 @@ public class StudentRepositoryImpl implements StudentRepository {
         if (object.getId() == null) {
             saveStudent(object);
         } else {
-            updateStudent(object);
+            try {
+                updateStudent(object);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
-    private void updateStudent(Student object) {
+    @Override
+    public void secUpdate(Student object) {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
-//      Student student1 = entityManager.find(Student.class , object.getId());
+        Optional<Student> student1 = findById(object.getId());
+        try {
+            transaction.begin();
+            student1.get().setDob(object.getDob());
+            student1.get().setFirstName(object.getFirstName());
+            student1.get().setLastName(object.getLastName());
+            student1.get().setNationalCode(object.getNationalCode());
+            student1.get().setCreateDate(object.getCreateDate());
+            student1.get().setCourseList(object.getCourseList());
+            student1.get().setExamList(object.getExamList());
+            entityManager.persist(object);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    private void updateStudent(Student object) throws Exception {
+        EntityManager entityManager = entityManagerProvider.getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        Optional<Student> student1 = findById(object.getId());
+        if (!student1.isPresent()) {
+            throw new GenerallyNotFoundException("this student not even exist");
+        }
         try {
             transaction.begin();
             entityManager.merge(object);
-//            student1.setDob(object.getDob());
-//            student1.setFirstName(object.getFirstName());
-//            student1.setLastName(object.getLastName());
-//            student1.setNationalCode(object.getNationalCode());
-//            student1.setCreateDate(object.getCreateDate());
-//            student1.setCourseList(object.getCourseList());
-//            student1.setExamList(object.getExamList());
             transaction.commit();
 
         } catch (Exception e) {
@@ -48,6 +71,7 @@ public class StudentRepositoryImpl implements StudentRepository {
         } finally {
             entityManager.close();
         }
+
     }
 
     private void saveStudent(Student object) {
@@ -87,9 +111,8 @@ public class StudentRepositoryImpl implements StudentRepository {
     @Override
     public Optional<Student> findById(Long id) {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-        Optional<Student> optionalStudent = Optional.empty();
-        Student student = entityManager.find(Student.class, id);
-        return optionalStudent = Optional.of(student);
+        Optional<Student> optionalStudent = Optional.ofNullable(entityManager.find(Student.class, id));
+        return optionalStudent;
 
     }
 

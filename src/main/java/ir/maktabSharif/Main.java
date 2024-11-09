@@ -11,8 +11,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.List;
+import java.util.Optional;
 
-public class Main {
+public class  Main {
     public static void main(String[] args) {
 
 
@@ -66,10 +67,12 @@ public class Main {
 //        }
         Student student = Student
                 .builder()
-                .firstName("aliReza")
-                .lastName("mobasher").build();
-        student.setId(6L);
+                .firstName("amirReza")
+                .lastName("kia").build();
+        student.setId(3L);
         studentRepository.saveOrUpdate(student);
-        System.out.println("student added");
+       // studentRepository.secUpdate(student);
+    //    Optional<Student> byId = studentRepository.findById(3l);
+        //   System.out.println(byId);
     }
 }

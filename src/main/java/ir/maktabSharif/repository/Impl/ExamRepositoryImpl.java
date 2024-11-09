@@ -3,6 +3,7 @@ package ir.maktabSharif.repository.Impl;
 
 import ir.maktabSharif.Exception.GenerallyNotFoundException;
 import ir.maktabSharif.model.Exam;
+import ir.maktabSharif.model.User;
 import ir.maktabSharif.repository.ExamRepository;
 import ir.maktabSharif.util.EntityManagerProvider;
 
@@ -83,11 +84,7 @@ public class ExamRepositoryImpl implements ExamRepository {
     @Override
     public Optional<Exam> findById(Long id) {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-        Optional<Exam> optionalExam = Optional.empty();
-        Exam exam = entityManager.find(Exam.class, id);
-        optionalExam = Optional.of(exam);
-
-
+        Optional<Exam> optionalExam = Optional.ofNullable(entityManager.find(Exam.class, id));
         return optionalExam;
     }
 
