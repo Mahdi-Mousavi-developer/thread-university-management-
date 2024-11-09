@@ -1,6 +1,6 @@
 package ir.maktabSharif.repository.Impl;
 
-import ir.maktabSharif.Exception.TeacherNotFoundException;
+import ir.maktabSharif.Exception.GenerallyNotFoundException;
 import ir.maktabSharif.model.Teacher;
 import ir.maktabSharif.repository.TeacherRepository;
 import ir.maktabSharif.util.EntityManagerProvider;
@@ -56,27 +56,26 @@ public class TeacherRepositoryImpl implements TeacherRepository {
     }
 
     @Override
-    public void delete(Integer id) throws TeacherNotFoundException {
+    public void delete(Long id) throws GenerallyNotFoundException {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         Optional<Teacher> optionalTeacher = findById(id);
-        if (this.findById(id).isPresent()) {
-            try {
-                transaction.begin();
-                entityManager.remove(optionalTeacher);
-                transaction.commit();
-            } catch (Exception e) {
-                transaction.rollback();
-            } finally {
-                entityManager.close();
-            }
-        } else {
-          throw new TeacherNotFoundException("teacher not found");
+        if (!this.findById(id).isPresent()) {
+            throw new GenerallyNotFoundException("teacher not found");
+        }
+        try {
+            transaction.begin();
+            entityManager.remove(optionalTeacher);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+        } finally {
+            entityManager.close();
         }
     }
 
     @Override
-    public Optional<Teacher> findById(Integer id) {
+    public Optional<Teacher> findById(Long id) {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
 
         Optional<Teacher> optionalTeacher = Optional.empty();
@@ -87,13 +86,13 @@ public class TeacherRepositoryImpl implements TeacherRepository {
     }
 
     @Override
-    public List<Teacher> getAll() throws TeacherNotFoundException {
+    public List<Teacher> getAll() throws GenerallyNotFoundException {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
         Query query = null;
         try {
             query = entityManager.createQuery("select c from Teacher c");
         } catch (Exception e) {
-            throw new TeacherNotFoundException("Teachers not found");
+            throw new GenerallyNotFoundException("Teachers not found");
         }
         return query.getResultList();
     }

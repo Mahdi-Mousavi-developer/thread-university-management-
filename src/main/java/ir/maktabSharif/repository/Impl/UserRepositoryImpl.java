@@ -1,6 +1,6 @@
 package ir.maktabSharif.repository.Impl;
 
-import ir.maktabSharif.Exception.UserNotFoundException;
+import ir.maktabSharif.Exception.GenerallyNotFoundException;
 import ir.maktabSharif.model.User;
 import ir.maktabSharif.repository.UserRepository;
 import ir.maktabSharif.util.EntityManagerProvider;
@@ -30,9 +30,14 @@ public class UserRepositoryImpl implements UserRepository {
     private void updateUser(User object) {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
+        //      User user1 = entityManager.find(User.class, object.getId());
         try {
             transaction.begin();
             entityManager.merge(object);
+//            user1.setUsername(object.getUsername());
+//            user1.setPassword(object.getPassword());
+//            user1.setUserRole(object.getUserRole());
+//            user1.setCreateDate(object.getCreateDate());
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
@@ -56,27 +61,27 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void delete(Integer id) throws UserNotFoundException {
+    public void delete(Long id) throws GenerallyNotFoundException {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         Optional<User> optionalUser = findById(id);
-        if (this.findById(id).isPresent()) {
-            try {
-                transaction.begin();
-                entityManager.remove(optionalUser);
-                transaction.commit();
-            } catch (Exception e) {
-                transaction.rollback();
-            } finally {
-                entityManager.close();
-            }
-        } else {
-            throw new UserNotFoundException("User not found");
+        if (!this.findById(id).isPresent()) {
+            throw new GenerallyNotFoundException("User not found");
+        }
+
+        try {
+            transaction.begin();
+            entityManager.remove(optionalUser);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+        } finally {
+            entityManager.close();
         }
     }
 
     @Override
-    public Optional<User> findById(Integer id) {
+    public Optional<User> findById(Long id) {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
 
         Optional<User> optionalUser = Optional.empty();
@@ -87,16 +92,15 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> getAll() throws UserNotFoundException {
+    public List<User> getAll() throws GenerallyNotFoundException {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-
-        Query query = null;
+        Query query;
         try {
 
             query = entityManager.createQuery("select c from User c");
 
         } catch (Exception e) {
-            throw new UserNotFoundException("users not found");
+            throw new GenerallyNotFoundException("users not found");
         }
         return query.getResultList();
     }

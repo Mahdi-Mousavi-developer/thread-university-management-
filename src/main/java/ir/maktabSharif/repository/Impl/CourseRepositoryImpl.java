@@ -1,6 +1,6 @@
 package ir.maktabSharif.repository.Impl;
 
-import ir.maktabSharif.Exception.CourseNotFoundException;
+import ir.maktabSharif.Exception.GenerallyNotFoundException;
 import ir.maktabSharif.model.Course;
 import ir.maktabSharif.repository.CourseRepository;
 import ir.maktabSharif.util.EntityManagerProvider;
@@ -57,12 +57,12 @@ public class CourseRepositoryImpl implements CourseRepository {
 
 
     @Override
-    public void delete(Integer id) throws Exception {
+    public void delete(Long id) throws Exception {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         Optional<Course> optionalCourse = findById(id);
         if (!this.findById(id).isPresent()) {
-            throw new CourseNotFoundException("Course not found");
+            throw new GenerallyNotFoundException("Course not found");
         }
         try {
             transaction.begin();
@@ -77,7 +77,7 @@ public class CourseRepositoryImpl implements CourseRepository {
 
 
     @Override
-    public Optional<Course> findById(Integer id) {
+    public Optional<Course> findById(Long id) {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
         Optional<Course> optionalCourse = Optional.empty();
         Course course = entityManager.find(Course.class, id);
@@ -88,13 +88,13 @@ public class CourseRepositoryImpl implements CourseRepository {
     }
 
     @Override
-    public List<Course> getAll() throws CourseNotFoundException {
+    public List<Course> getAll() throws GenerallyNotFoundException {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
         Query query = null;
         try {
             query = entityManager.createQuery("select c from Course c");
         } catch (Exception e) {
-            throw new CourseNotFoundException("course not found");
+            throw new GenerallyNotFoundException("course not found");
         }
         return query.getResultList();
     }

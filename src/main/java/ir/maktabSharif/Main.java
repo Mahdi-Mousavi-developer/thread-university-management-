@@ -16,9 +16,9 @@ public class Main {
     public static void main(String[] args) {
 
 
-        //todo if else ha ro dorost kon,
-        // exception haro yeki kon va faghat bia massage ro avaz kon,
-        // bya method uptade ro dorost kon ke aval find kone baadesh bere karasho bokone,
+
+
+
 
 
 
@@ -57,17 +57,18 @@ public class Main {
 
 
         //thread
-        Thread thread = new Thread(new CountOfAllStudent(studentRepository));
-        thread.start();
-        try {
-            Thread.sleep(6000, 1);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+//        Thread thread = new Thread(new CountOfAllStudent(studentRepository));
+//        thread.start();
+//        try {
+//            Thread.sleep(6000, 1);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
         Student student = Student
                 .builder()
-                .firstName("amir")
-                .lastName("kia").build();
+                .firstName("aliReza")
+                .lastName("mobasher").build();
+        student.setId(6L);
         studentRepository.saveOrUpdate(student);
         System.out.println("student added");
     }
