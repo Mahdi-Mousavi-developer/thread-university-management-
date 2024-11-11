@@ -15,27 +15,11 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @ToString
 @NamedQuery(name="Student.findByFirstname",query = "FROM Student where firstName=?1")
 
-public class Student extends BaseModel {
+public class Student extends Person {
 
-
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
-    @Column(name ="national_code",unique = true)
-    private String nationalCode;
-    @Enumerated
-    private Gender gender;
-
-    @Temporal(TemporalType.DATE)
-    private Date dob;
-    @Embedded
-    private Address address;
 
     @ManyToMany
     @JoinTable(

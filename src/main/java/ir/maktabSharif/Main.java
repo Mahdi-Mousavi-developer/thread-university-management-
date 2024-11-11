@@ -5,7 +5,9 @@ import ir.maktabSharif.model.Course;
 import ir.maktabSharif.model.Gender;
 import ir.maktabSharif.model.Student;
 import ir.maktabSharif.repository.Impl.CourseRepositoryImpl;
+import ir.maktabSharif.repository.Impl.PersonRepositoryImpl;
 import ir.maktabSharif.repository.Impl.StudentRepositoryImpl;
+import ir.maktabSharif.repository.PersonRepository;
 import ir.maktabSharif.thread.CountOfAllStudent;
 import ir.maktabSharif.util.EntityManagerProvider;
 
@@ -18,22 +20,8 @@ import java.util.Optional;
 public class  Main {
     public static void main(String[] args) {
 
-
-
-
-
-
-
-
-
-
-
-
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("jdbc-postgres");
         EntityManager em = emf.createEntityManager();
-
-
-
 
 
         //test getAll()
@@ -48,18 +36,14 @@ public class  Main {
         System.out.println(cours);
 
 
-        StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(entityManagerProvider);
 
-
-        Address address = Address.builder()
-                .country("Iran").city("tehran").street("damavandi").zipCode("12344567891").build();
-        Student student = Student
-                .builder()
-                .firstName("amirReza")
-                .lastName("kia").gender(Gender.MALE).address(address).build();
-        student.setId(3L);
-       // studentRepository.saveOrUpdate(student);
-       List<Student> students= studentRepository.FindStudentsByFirstName("mahdi");
-        System.out.println(students);
+        //test count of all persons
+        PersonRepository personRepository = new PersonRepositoryImpl(entityManagerProvider);
+        try {
+            Long count = personRepository.countOfPerson();
+            System.out.println(count);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
