@@ -36,7 +36,7 @@ public class  Main {
         System.out.println(cours);
 
 
-
+        System.out.println("git test");
         //test count of all persons
         PersonRepository personRepository = new PersonRepositoryImpl(entityManagerProvider);
         try {
