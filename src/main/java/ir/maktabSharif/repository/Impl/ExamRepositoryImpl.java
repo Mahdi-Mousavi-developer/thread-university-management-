@@ -31,6 +31,31 @@ public class ExamRepositoryImpl implements ExamRepository {
         }
     }
 
+    @Override
+    public void secondUpdate(Exam object) throws GenerallyNotFoundException {
+        EntityManager entityManager = entityManagerProvider.getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            Optional<Exam> foundedExam = this.findById(object.getId());
+            if (!foundedExam.isPresent()) {
+                throw new GenerallyNotFoundException("Exam not found");
+            }
+            transaction.begin();
+            foundedExam.get().setExamDate(object.getExamDate());
+            foundedExam.get().setExamTitle(object.getExamTitle());
+            foundedExam.get().setCourse(object.getCourse());
+            foundedExam.get().setScore(object.getScore());
+            foundedExam.get().setStudents(object.getStudents());
+            foundedExam.get().setCreateDate(object.getCreateDate());
+            entityManager.persist(foundedExam);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+        } finally {
+            entityManager.close();
+        }
+    }
+
     private void updateExam(Exam object) {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();

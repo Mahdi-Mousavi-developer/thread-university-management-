@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Optional;
 public class StudentRepositoryImpl implements StudentRepository {
     private EntityManagerProvider entityManagerProvider;
+
+
     public List<Student> FindStudentsByFirstName (String name){
         EntityManager entityManager = entityManagerProvider.getEntityManager();
-//      (queryish to model,student hast)
+//      (This query is placed in model.Student )
         TypedQuery<Student> students = entityManager.createNamedQuery("Student.findByFirstname", Student.class);
         students.setParameter(1,name);
         return students.getResultList();
@@ -36,20 +38,25 @@ public class StudentRepositoryImpl implements StudentRepository {
     }
 
     @Override
-    public void secUpdate(Student object) {
+    public void secondUpdate(Student object) throws GenerallyNotFoundException {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
-        Optional<Student> student1 = findById(object.getId());
         try {
+            Optional<Student> foundedStudent = findById(object.getId());
+            if (!foundedStudent.isPresent()) {
+                throw new GenerallyNotFoundException("Student not found");
+            }
             transaction.begin();
-            student1.get().setDob(object.getDob());
-            student1.get().setFirstName(object.getFirstName());
-            student1.get().setLastName(object.getLastName());
-            student1.get().setNationalCode(object.getNationalCode());
-            student1.get().setCreateDate(object.getCreateDate());
-            student1.get().setCourseList(object.getCourseList());
-            student1.get().setExamList(object.getExamList());
-            entityManager.persist(student1);
+            foundedStudent.get().setDob(object.getDob());
+            foundedStudent.get().setFirstName(object.getFirstName());
+            foundedStudent.get().setLastName(object.getLastName());
+            foundedStudent.get().setNationalCode(object.getNationalCode());
+            foundedStudent.get().setCreateDate(object.getCreateDate());
+            foundedStudent.get().setCourseList(object.getCourseList());
+            foundedStudent.get().setExamList(object.getExamList());
+            foundedStudent.get().setAddress(object.getAddress());
+            foundedStudent.get().setGender(object.getGender());
+            entityManager.persist(foundedStudent);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();

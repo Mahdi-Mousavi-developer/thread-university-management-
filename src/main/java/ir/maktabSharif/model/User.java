@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
@@ -14,6 +15,8 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@NamedQuery(name="User.findByUsernameAndPassword",query = "FROM User where username=?1 and password=?2")
+
 public class User extends BaseModel {
     @Column(name ="user_name")
     private String username;

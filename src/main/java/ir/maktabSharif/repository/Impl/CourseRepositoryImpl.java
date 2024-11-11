@@ -42,6 +42,30 @@ public class CourseRepositoryImpl implements CourseRepository {
         }
     }
 
+    @Override
+    public void secondUpdate(Course object) throws GenerallyNotFoundException {
+        EntityManager entityManager = entityManagerProvider.getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            Optional<Course> foundedCourse = this.findById(object.getId());
+            if (!foundedCourse.isPresent()) {
+                throw new GenerallyNotFoundException("Course not found");
+            }
+            transaction.begin();
+            foundedCourse.get().setCreateDate(object.getCreateDate());
+            foundedCourse.get().setExams(object.getExams());
+            foundedCourse.get().setUnit(object.getUnit());
+            foundedCourse.get().setTitle(object.getTitle());
+            foundedCourse.get().setStudents(object.getStudents());
+            entityManager.persist(foundedCourse);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+        } finally {
+            entityManager.close();
+        }
+    }
+
     public void updateCourse(Course course) {
         EntityManager entityManager = entityManagerProvider.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();

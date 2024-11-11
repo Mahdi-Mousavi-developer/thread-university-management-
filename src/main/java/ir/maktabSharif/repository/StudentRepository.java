@@ -2,6 +2,8 @@ package ir.maktabSharif.repository;
 
 import ir.maktabSharif.model.Student;
 
+import java.util.List;
+
 public interface StudentRepository extends BaseRepository<Student>{
-    void secUpdate(Student student);
+    List<Student> FindStudentsByFirstName (String name);
 }
