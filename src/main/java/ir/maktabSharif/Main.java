@@ -1,6 +1,8 @@
 package ir.maktabSharif;
 
+import ir.maktabSharif.model.Address;
 import ir.maktabSharif.model.Course;
+import ir.maktabSharif.model.Gender;
 import ir.maktabSharif.model.Student;
 import ir.maktabSharif.repository.Impl.CourseRepositoryImpl;
 import ir.maktabSharif.repository.Impl.StudentRepositoryImpl;
@@ -29,15 +31,7 @@ public class  Main {
 
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("jdbc-postgres");
         EntityManager em = emf.createEntityManager();
-        //   // add kardan student be database
-        //   Student student = Student
-        //           .builder()
-        //           .firstName("ali")
-        //           .lastName("ezati").build();
-        //   em.getTransaction().begin();
-        //   em.persist(student);
-        //   em.getTransaction().commit();*/
-        //   // payan add kardan student be database
+
 
 
 
@@ -57,22 +51,15 @@ public class  Main {
         StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(entityManagerProvider);
 
 
-        //thread
-//        Thread thread = new Thread(new CountOfAllStudent(studentRepository));
-//        thread.start();
-//        try {
-//            Thread.sleep(6000, 1);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
+        Address address = Address.builder()
+                .country("Iran").city("tehran").street("damavandi").zipCode("12344567891").build();
         Student student = Student
                 .builder()
                 .firstName("amirReza")
-                .lastName("kia").build();
+                .lastName("kia").gender(Gender.MALE).address(address).build();
         student.setId(3L);
-        studentRepository.saveOrUpdate(student);
-       // studentRepository.secUpdate(student);
-    //    Optional<Student> byId = studentRepository.findById(3l);
-        //   System.out.println(byId);
+       // studentRepository.saveOrUpdate(student);
+       List<Student> students= studentRepository.FindStudentsByFirstName("mahdi");
+        System.out.println(students);
     }
 }

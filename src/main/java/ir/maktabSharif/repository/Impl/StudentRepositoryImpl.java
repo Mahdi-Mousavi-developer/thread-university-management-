@@ -5,14 +5,18 @@ import ir.maktabSharif.model.Student;
 import ir.maktabSharif.repository.StudentRepository;
 import ir.maktabSharif.util.EntityManagerProvider;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.util.List;
 import java.util.Optional;
-
 public class StudentRepositoryImpl implements StudentRepository {
     private EntityManagerProvider entityManagerProvider;
+    public List<Student> FindStudentsByFirstName (String name){
+        EntityManager entityManager = entityManagerProvider.getEntityManager();
+//      (queryish to model,student hast)
+        TypedQuery<Student> students = entityManager.createNamedQuery("Student.findByFirstname", Student.class);
+        students.setParameter(1,name);
+        return students.getResultList();
+    }
 
     public StudentRepositoryImpl(EntityManagerProvider entityManagerProvider) {
         this.entityManagerProvider = entityManagerProvider;
@@ -45,7 +49,7 @@ public class StudentRepositoryImpl implements StudentRepository {
             student1.get().setCreateDate(object.getCreateDate());
             student1.get().setCourseList(object.getCourseList());
             student1.get().setExamList(object.getExamList());
-            entityManager.persist(object);
+            entityManager.persist(student1);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
