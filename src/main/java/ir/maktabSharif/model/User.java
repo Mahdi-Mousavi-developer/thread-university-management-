@@ -2,6 +2,7 @@ package ir.maktabSharif.model;
 
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +15,7 @@ import javax.persistence.Table;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @NamedQuery(name="User.findByUsernameAndPassword",query = "FROM User where username=?1 and password=?2")
 
 public class User extends BaseModel {

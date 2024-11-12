@@ -8,6 +8,7 @@ import ir.maktabSharif.repository.Impl.CourseRepositoryImpl;
 import ir.maktabSharif.repository.Impl.PersonRepositoryImpl;
 import ir.maktabSharif.repository.Impl.StudentRepositoryImpl;
 import ir.maktabSharif.repository.PersonRepository;
+import ir.maktabSharif.repository.StudentRepository;
 import ir.maktabSharif.thread.CountOfAllStudent;
 import ir.maktabSharif.util.EntityManagerProvider;
 
@@ -17,7 +18,7 @@ import javax.persistence.Persistence;
 import java.util.List;
 import java.util.Optional;
 
-public class  Main {
+public class Main {
     public static void main(String[] args) {
 
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("jdbc-postgres");
@@ -35,6 +36,11 @@ public class  Main {
         }
         System.out.println(cours);
 
+        Student student = new Student();
+        student.setFirstName("milad");
+        student.setGender(Gender.FEMALE);
+        StudentRepository studentRepository = new StudentRepositoryImpl(entityManagerProvider);
+        studentRepository.saveOrUpdate(student);
 
         System.out.println("git test");
         //test count of all persons
