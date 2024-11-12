@@ -1,6 +1,7 @@
 package ir.maktabSharif.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,8 +17,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@SuperBuilder
 @NamedQuery(name="Student.findByFirstname",query = "FROM Student where firstName=?1")
-
 public class Student extends Person {
 
 

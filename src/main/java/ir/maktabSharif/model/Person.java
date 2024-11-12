@@ -1,6 +1,7 @@
 package ir.maktabSharif.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -21,7 +22,7 @@ public class Person extends BaseModel{
     private String lastName;
     @Column(name ="national_code")
     private String nationalCode;
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Gender gender;
     @Temporal(TemporalType.DATE)
     private Date dob;
